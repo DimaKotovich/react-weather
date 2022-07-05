@@ -1,0 +1,27 @@
+{
+  "files": {
+    "main.css": "/react-weather/static/css/main.31aade4e.css",
+    "main.js": "/react-weather/static/js/main.a9a87b6d.js",
+    "static/media/logo.gif": "/react-weather/static/media/logo.a9f0b059cab9cdca8f92.gif",
+    "static/media/rainbow.gif": "/react-weather/static/media/rainbow.4740fe75c49593f6324b.gif",
+    "static/media/pressure.png": "/react-weather/static/media/pressure.11b0c25270b5bedd58e4.png",
+    "static/media/city.png": "/react-weather/static/media/city.dd877b368b705fb91614.png",
+    "static/media/clouds.png": "/react-weather/static/media/clouds.20f0cc1d2fa7fabb49bb.png",
+    "static/media/hight-temperature.png": "/react-weather/static/media/hight-temperature.16a49c72405eaa440270.png",
+    "static/media/add.png": "/react-weather/static/media/add.7b5b49fb4a9b8a5db24e.png",
+    "static/media/low-temperature.png": "/react-weather/static/media/low-temperature.61233b9170b17df388bb.png",
+    "static/media/rain.png": "/react-weather/static/media/rain.f009e441a604361a2783.png",
+    "static/media/humidity.png": "/react-weather/static/media/humidity.e9a7ca4ce1f98758c6fe.png",
+    "static/media/sun.png": "/react-weather/static/media/sun.6d48da504f4816188c8d.png",
+    "static/media/celsius.png": "/react-weather/static/media/celsius.eea94596b20685233d83.png",
+    "static/media/control-temperature.png": "/react-weather/static/media/control-temperature.82f70ac1d0c5ef647593.png",
+    "static/media/delete.png": "/react-weather/static/media/delete.b5d68e25ab3f6cd47475.png",
+    "index.html": "/react-weather/index.html",
+    "main.31aade4e.css.map": "/react-weather/static/css/main.31aade4e.css.map",
+    "main.a9a87b6d.js.map": "/react-weather/static/js/main.a9a87b6d.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.31aade4e.css",
+    "static/js/main.a9a87b6d.js"
+  ]
+}
