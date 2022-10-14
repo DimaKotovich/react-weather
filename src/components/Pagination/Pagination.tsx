@@ -5,10 +5,11 @@ import classNames from 'classnames';
 interface Props {
   cityPerPage: number
   totalCity: number
+  currentPage: number
   paginate: (pageNumber: number) => void
 }
 
-export const Pagination: FC<Props> = ({cityPerPage, totalCity, paginate}) => {
+export const Pagination: FC<Props> = ({currentPage,cityPerPage, totalCity, paginate}) => {
   const pageNumbers = [];
 
   for (let i = 1; i <= Math.ceil(totalCity / cityPerPage); i++) {
@@ -22,7 +23,10 @@ export const Pagination: FC<Props> = ({cityPerPage, totalCity, paginate}) => {
           pageNumbers.map(number => (
             <li key={number}
              className= 'list__item'>
-              <div className='list__item--link'
+              <div className={classNames(
+                'list__item--link',
+                { 'list__item--active': currentPage === number }
+              )}
                onClick={() => paginate(number)}>
                 {number}
               </div>

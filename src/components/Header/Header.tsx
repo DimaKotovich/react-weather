@@ -3,18 +3,18 @@ import './header.scss'
 import HeaderLogo from '../../image/logo.gif';
 import RightLogo from '../../image/rainbow.gif';
 import Add from '../../image/add.png';
-import { checkCity } from '../../api/api';
-import { createDatabase } from '../../IndexedDB/Indexeddb';
+import Search from '../../image/search.png';
+import { getWeather } from '../../api/api';
+import { IndexedDb } from '../../IndexedDB/Indexeddb';
 
 interface Props {
-  city: string
   allCity: any
-  setCity: (param: string) => void
   setAllCity: (param: any) => void
   checkState: (state: any, element: string) => boolean
+  setWeather: (param: any) => void
 }
 
-export const Header: FC<Props> = ({ city, setCity, allCity, setAllCity, checkState}) => {
+export const Header: FC<Props> = ({allCity, setAllCity, checkState, setWeather}) => {
 
   const [validation,setValidation] = useState(true);
   const [search,setSearch] = useState('');
@@ -23,8 +23,9 @@ export const Header: FC<Props> = ({ city, setCity, allCity, setAllCity, checkSta
     setSearch(event.target.value.toUpperCase());
   };
 
-  const add = () => {
-    createDatabase('add', {value: search, label:search});
+  const add = async(city: string) => {
+    const open = await new IndexedDb('City', 1);
+    await open.add({value: city, label: city});
   };
 
   const getCity = async (event: any) => {
@@ -33,16 +34,18 @@ export const Header: FC<Props> = ({ city, setCity, allCity, setAllCity, checkSta
       setValidation(false);
     } else {
       setValidation(true);
-      add();
-      const respons = await checkCity(search);
       if (checkState(allCity, search) === true) {
         alert('The city has already been added')
-      } else if (respons.cod === 200) {
-        setCity(search);
-        setAllCity([{value: search, label:search},...allCity]);
       } else {
-        alert('City not Found');
-      }
+        const respons = await getWeather(search);
+        if (respons.cod === 200) {
+          setWeather(respons);
+          setAllCity([{value: respons.name.toUpperCase(), label:respons.name.toUpperCase()},...allCity]);
+          add(respons.name.toUpperCase());
+        } else {
+          alert('City not Found');
+        }
+      } 
     }
     setSearch('');
   }
@@ -59,7 +62,11 @@ export const Header: FC<Props> = ({ city, setCity, allCity, setAllCity, checkSta
           <h1 className='header__wrapper--title'>React-Weather</h1>
         </div>
         <div className='header__wrapper'>
-        
+          <img 
+            src={Search}
+            alt="Search"
+            className='header__wrapper--searchImage'
+          />
           <form className='header__wrapper--search' onSubmit={getCity}>
             {!validation && <span className='header__wrapper--error'>Enter the correct city!</span>}
             <label>
@@ -68,6 +75,7 @@ export const Header: FC<Props> = ({ city, setCity, allCity, setAllCity, checkSta
                 type="text" 
                 required onChange={change} 
                 value={search}
+                placeholder='ADD CITY'
               />
             </label>
             <button className='header__wrapper--button' type="submit">

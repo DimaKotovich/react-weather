@@ -21,3 +21,4 @@ type Weather = {
     temp_min: number,
   }
 }
+

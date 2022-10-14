@@ -5,95 +5,112 @@ const indexedDB =
   window.msIndexedDB ||
   window.shimIndexedDB;
 
-let db;
+export class IndexedDb {
 
-export const createDatabase = (type, object) => {
+  constructor(dbName, dbVersion, dbUpgrade) {
 
-    if (!indexedDB) throw new Error("Your browser doesn't support IndexedBD");
+    return new Promise((resolve, reject) => {
 
-    let request = window.indexedDB.open('City', 1);
+      this.db = null;
 
-    request.onerror = (e) => {
+      if (!('indexedDB' in window)) reject('not supported');
+
+      const dbOpen = indexedDB.open('City', 1);
+
+      dbOpen.onupgradeneeded = (e) => {
+        const db = dbOpen.result;
+        console.log(1)
+        const objectStore = db.createObjectStore('city', {keyPath: 'value'});
+    
+        objectStore.createIndex('label', 'label', { unique: false });
+  
+        objectStore.put({ value: 'KYIV', label: 'KYIV' });
+  
+        objectStore.transaction.oncompleted = (e)=> {
+        }
+    
     };
 
-    request.onsuccess = (e) => {
-        db = request.result;
-        if (type === 'get') {
-          getStudent();
-        } else if (type === 'delete') {
-          DeleteStore();
-        }
-        else if (type === 'add') {
-          addStudent(object);
-        }
-        
-    };
-
-    request.onupgradeneeded = (e) => {
-
-      const db = request.result;
-  
-      const objectStore = db.createObjectStore('city', {keyPath: 'value'});
-  
-      objectStore.createIndex('label', 'label', { unique: false });
-
-      objectStore.put({ value: 'KYIV', label: 'KYIV' });
-
-      objectStore.transaction.oncompleted = (e)=> {
+      if (dbUpgrade) {
+        console.log(true);
+        dbOpen.onupgradeneeded = e => {
+          dbUpgrade(dbOpen.result, e.oldVersion, e.newVersion);
+        };
       }
-  
-  };
 
-}
+      dbOpen.onsuccess = () => {
+        this.db = dbOpen.result;
+        resolve( this );
+      };
 
-export const addStudent = (object) =>{
+      dbOpen.onerror = e => {
+        reject(`IndexedDB error: ${ e.target.errorCode }`);
+      };
 
-  const transaction = db.transaction('city', 'readwrite');
+    });
 
-  transaction.oncomplete = function(event) {
-  };
+  }
 
-  transaction.onerror = function(event) {
-  };
+  get() {
+    return new Promise((resolve, reject) => {
 
-  const objectStore = transaction.objectStore('city');
+      const request = this.db.transaction('city')
+                       .objectStore('city')
+                       .getAll();
 
-  const request = objectStore.add(object);
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
 
-  request.onsuccess = ()=> {
-  };
+      request.onerror = () => {
+        reject(request.error);
+      };
 
-  request.onerror = (err)=> {
-  };
-}
+    });
 
-export const getStudent = () =>{
-  const request = db.transaction('city')
-                   .objectStore('city')
-                   .getAll();
+  }
 
-    request.onsuccess = ()=> {
-        const students = request.result;
+  delete() {
 
-        for (let i in students) {
-          Options.push(students[i])
-        }
+    return new Promise((resolve, reject) => {
+
+      const request = this.db.transaction('city', 'readwrite')
+                       .objectStore('city')
+                       .clear();
+
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
+
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
+  }
+
+  add(object) {
+    return new Promise((resolve, reject) => {
+
+      const transaction = this.db.transaction('city', 'readwrite');
+
+    transaction.oncomplete = function(event) {
     };
 
-    request.onerror = (err)=> {
+    transaction.onerror = function(event) {
     };
+
+    const objectStore = transaction.objectStore('city');
+
+    const request = objectStore.add(object);
+
+      request.onsuccess = () => {
+        resolve(request.result);
+      };
+
+      request.onerror = () => {
+        reject(request.error);
+      };
+    });
+  }
 }
 
-function DeleteStore(){
-  const request = db.transaction('city', 'readwrite')
-                    .objectStore('city')
-                    .clear();
-
-  request.onsuccess = ()=> {
-  };
-
-  request.onerror = (err)=> {
-  };
-}
-
-export let Options = [];

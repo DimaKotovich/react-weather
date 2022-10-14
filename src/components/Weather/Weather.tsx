@@ -1,6 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect } from 'react';
 import './weather.scss';
-import { getWeather } from '../../api/api';
 import Sun from '../../image/sun.png';
 import Clouds from '../../image/clouds.png';
 import Rain from '../../image/rain.png';
@@ -10,25 +9,28 @@ import HightTemp from '../../image/hight-temperature.png';
 import ControlTemp from '../../image/control-temperature.png';
 import Pressure from '../../image/pressure.png';
 import Humidity from '../../image/humidity.png';
+import {getWeather } from '../../api/api';
 
 
 interface Props {
-  city: string;
+  city: string
+  weather: Weather | null
+  setWeather: (param: any) => void
 }
 
-export const Weather: FC<Props> = ({city}) => {
+export const Weather: FC<Props> = ({city , weather, setWeather}) => {
 
-  const [weather, setWeather] = useState<Weather | null>(null);
-
-  const Respons = async () => {
-    const responsWeather = await getWeather(city);
-    setWeather(responsWeather);
+  const getData = async () => {
+    if (city.length > 0) {
+      const respons = await getWeather(city);
+      setWeather(respons);
+    }
   }
 
   useEffect(() => {
-    Respons();
+    getData();
   }, [city]);
-
+  
   return (
     <>
       <h1 className='city_title'>{weather?.name}</h1>

@@ -4,14 +4,13 @@ import { Weather } from './components/Weather/Weather';
 import { Pagination } from './components/Pagination/Pagination';
 import { Cities } from './components/Cities/Cities';
 import { Header } from './components/Header/Header'
-import { createDatabase } from './IndexedDB/Indexeddb';
-import { Options } from './IndexedDB/Indexeddb';
+import { IndexedDb } from './IndexedDB/Indexeddb';
 
 function App() {
-  let options = Options;
 
-  const [allCity,setAllCity] = useState(options);
-  const [city,setCity] = useState("Kyiv");
+  const [allCity,setAllCity] = useState([{}]);
+  const [weather, setWeather] = useState<Weather | null>(null);
+  const [city,setCity] = useState("");
   const [currentPage,setCurrentPage] = useState(1);
   const [cityPerPage] = useState(6);
   
@@ -24,32 +23,38 @@ function App() {
     return false;
   }
 
-  const location = () => {
+  const location = async () => {
     navigator.geolocation.getCurrentPosition(async function(position) {
       const lat = position.coords.latitude;
       const lon = position.coords.longitude;
       const respons = await getLocation(lat, lon);
       const name = respons.name.toUpperCase();
-      if (!checkState(options, name)) {
-        options.unshift({value: name, label:name});
-      };
-      setCity(name);
-      
+      const open = await new IndexedDb('City', 1);
+      const get = await open.get();
+      if (!checkState(get, name) && !checkState(allCity, name)) {
+        console.log('Location');
+        await open.add({value: name, label:name});
+        allCity.unshift({value: name, label:name});
+      }
+      setWeather(respons);
     });
   }
 
-  const add = () => {
-    for (let i in allCity) {
-      createDatabase('add', allCity[i]);
-    };
+  const connectDB = async () => {
+    const open = await new IndexedDb('City', 1);
+    const get = await open.get();
+
+    await setCity(get[get.length-1].value);
+    await setAllCity(get);
+    setCurrentPage(Math.ceil(get.length/6));
   }
 
   useEffect(() => {
-    createDatabase('get');
-    add();
     location();
+    setTimeout(connectDB, 200);
   }, []);
 
+  
 
   const lastCityIndex = currentPage * cityPerPage;
   const firstCityIndex = lastCityIndex - cityPerPage;
@@ -61,28 +66,31 @@ function App() {
   return (
     <div className="app">
       <Header
-        city={city}
         allCity={allCity}
         setAllCity={setAllCity}
-        setCity={setCity}
         checkState={checkState}
+        setWeather={setWeather}
       />
+
       <Weather
         city={city}
+        weather={weather}
+        setWeather={setWeather}
       />
 
       <Cities
         currentCity={currentCity}
-        city={city}
         setCity={setCity}
         allCity={allCity}
         setAllCity={setAllCity}
+        weather={weather}
       />
       {allCity.length > 6 &&
         <Pagination
           cityPerPage={cityPerPage}
           totalCity={allCity.length}
           paginate={paginate}
+          currentPage={currentPage}
         />
       }
     </div>

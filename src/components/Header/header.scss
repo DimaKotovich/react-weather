@@ -1,3 +1,5 @@
+@import '/src/styles/utils/mixins';
+
 .header {
   margin: 10px auto;
   padding: 10px;
@@ -5,20 +7,42 @@
   justify-content: space-between;
   border: 3px solid black;
   border-radius: 30px;
-  width: 1200px;
   height: max-content;
   align-items: center;
+
+  @include onDesktop {
+    width: 1000px;
+  }
 
 
   &__wrapper {
     display: flex;
     gap: 20px;
     align-items: center;
+    
+    @include onPhone {
+      gap: 6px;
+    }
+
+    &--searchImage {
+      width: 40px;
+      height: 40px;
+
+      @include onPhone {
+        width: 20px;
+        height: 20px;
+      }
+    }
 
     &--logo {
       width: 64px;
       height: 64px;
       transition: 1.3s all;
+
+      @include onPhone {
+        width: 44px;
+        height: 44px;
+      }
 
       &:hover {
         transform: rotateY(360deg);
@@ -28,6 +52,10 @@
     &--title {
       text-transform: uppercase;
       color: #4793FF;
+
+      @include onPhone {
+        font-size: 20px;
+      }
     }
 
     &--error {
@@ -39,12 +67,20 @@
       display: flex;
       align-items: center;
       gap: 10px;
+
+      @include onPhone {
+        gap: 0px;
+      }
     }
 
     &--input {
       border: 1px solid black;
       border-radius: 30px;
       padding: 5px;
+
+      @include onPhone {
+        width: 88px;
+      }
     }
 
     &--button {
@@ -62,6 +98,10 @@
       outline: none;
       border: 0;
       background: transparent;
+
+      @include onPhone {
+        width: 29px;
+      }
      }
   }
 }

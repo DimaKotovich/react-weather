@@ -1,3 +1,4 @@
+@import '/src/styles/utils/mixins';
 .citiesTitle {
   text-align: center;
   margin: 0 0 20px;
@@ -11,6 +12,14 @@
   justify-content: center;
   gap: 20px;
   list-style: none;
+
+  @include onPhone {
+    flex-direction: column;
+  }
+
+  @include onTablet {
+    flex-wrap: wrap;
+  }
 
   &__item {
     font-size: 25px;

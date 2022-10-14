@@ -1,3 +1,4 @@
+@import '/src/styles/utils/mixins';
 .city_title {
   text-transform: uppercase;
   text-align: center;
@@ -12,9 +13,17 @@
 .weather {
   display: flex;
   margin: 10px auto;
-  width: 900px;
   justify-content: space-between;
   margin-bottom: 50px;
+
+  @include onDesktop {
+    width: 900px;
+  }
+
+  @include onPhone {
+    flex-direction: column;
+    gap: 10px;
+  }
 
   &__wrapper {
     display: flex;
@@ -24,11 +33,14 @@
   &__main {
     display: flex;
     flex-direction: column;
-    width: 300px;
     height: 200px;
     border: 2px solid #4793FF;
     border-radius: 20px;
     padding: 20px;
+
+    @include onDesktop {
+      width: 300px;
+    }
 
     &--date {
       text-align: center;
@@ -66,15 +78,30 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: 500px;
     height: 200px;
     border: 2px solid #4793FF;
     border-radius: 20px;
     padding: 20px;
+    justify-content: center;
+
+    @include onDesktop {
+      width: 500px;
+    }
+    
 
     &--tempimage {
       width: 64px;
       height: 64px;
+
+      @include onPhone {
+        width: 44px;
+        height: 44px;
+      }
+
+      @include onTablet {
+        width: 44px;
+        height: 44px;
+      }
     }
 
     &--firstimage {
@@ -84,6 +111,15 @@
     &--text {
       font-size: 45px;
       color: #4793FF;
+
+      @include onPhone {
+        font-size: 40px;
+      }
+
+      @include onTablet {
+        font-size: 40px;
+      }
+
     }
   }
 }
